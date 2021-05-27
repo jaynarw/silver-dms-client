@@ -1,0 +1,77 @@
+@keyframes leftSlider{
+    from{
+        margin-right:-200px;
+    } 
+    to{
+        margin-right: 0px;
+    }
+}
+#files{
+    margin: 0px auto;
+    align-items: center;
+    width:80%;
+    list-style: none;
+}
+#file_info{
+    text-decoration: none;
+    width:100%;
+    height: 200px;
+    margin:5px auto;
+
+}
+#file_info:hover{
+    box-shadow: 5px 5px 10px black;
+}
+#file_info:focus{
+    text-decoration: none;
+}
+.encloser{
+    
+    width: 100%;
+    border: 2px solid #AAAAAA;
+    border-radius: 5px;
+    height:inherit;
+}
+.foption{
+    background-color: #F0CA56;
+    width: 30%;
+    float: left;
+    padding:auto auto;
+    border-right: 2% solid salmon;
+    height: inherit;
+    text-align: center;
+}
+.fdesc{
+    width:40%;
+    float:left;
+    text-align: center;
+    background-color: #F54A1B;
+    height: inherit;
+    size: 20px;
+
+}
+.decide{
+    width:30%;
+    height: inherit;
+    float:right;
+    text-align: center;
+    padding:auto 0px;
+    background-color: #E65393;
+    size:25px;
+}
+button{
+    width: 80px;
+    height: 45px;
+    background-color:#E6535A;
+    color:white;
+    font-size: medium;
+    font-weight: bold;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+#lnewname{
+    color: white;
+    size:20px;
+}
+
+
