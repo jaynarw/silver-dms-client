@@ -48,7 +48,7 @@
     background-color: #F54A1B;
     height: inherit;
     size: 20px;
-
+    overflow-y: scroll;
 }
 .decide{
     width:30%;
@@ -59,7 +59,7 @@
     background-color: #E65393;
     size:25px;
 }
-button{
+/* button{
     width: 80px;
     height: 45px;
     background-color:#E6535A;
@@ -68,7 +68,7 @@ button{
     font-weight: bold;
     border-radius: 3px;
     margin-right: 10px;
-}
+} */
 #lnewname{
     color: white;
     size:20px;

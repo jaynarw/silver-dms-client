@@ -3,7 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import Toolbar from './components/Toolbar';
 import { LeftMenu, RightMenu, FileMenu } from './components/Menu';
-
+import {Layout, Input} from "antd";
+import "antd/dist/antd.css";
 /*function FileOptions(props){
     const options = (
         <div id = 'general-options'>
@@ -22,10 +23,27 @@ class Box extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            fileArray:[{name:'FileDemo',size:23},{name:'File2',size:3,desc:'This file has some contents for getting A grade'}],
+            fileArray:[],
             fileSelected:false,
             
         };
+    }
+    componentDidMount(){
+        fetch("http://localhost:5000/data")
+            .then(res=>res.json())
+            .then(
+                (result)=>{
+                    this.setState({
+                        fileArray:result.uploaded_files,
+                    });
+                },
+                (error)=>{
+                    this.setState({
+                        fileArray:[{name:'file1',desc:'desc1'}],
+                    });
+                }
+                
+            )
     }
     
     handleRenameClick2(i){
@@ -36,8 +54,8 @@ class Box extends React.Component{
                 Enter New Name
             </h3>
             <form>
-                <input type="text" onChange={null} value={this.state.fileArray[i].name}/>
-                <input type= "submit" onChange={null} value={'Change'}/>
+                <Input type="text" onChange={null} value={this.state.fileArray[i].name}/>
+                <Input type= "submit" onChange={null} value={'Change'}/>
             </form>
 
             </div>
@@ -107,14 +125,18 @@ class Box extends React.Component{
         );
         const farr = this.state.fileArray.slice();
         const listItems = farr.map((file)=>
-            <li><FileMenu name={file.name}
+            <li><FileMenu name={file.Course}
+                            link={file.Link}
                           fileNumber={farr.indexOf(file)}  
                          onAcceptClick={()=>this.handleAcceptClick(farr.indexOf(file))}
                          onRenameClick={()=>this.handleRenameClick2(farr.indexOf(file))}
             />
             </li>)
         return (
-            <ul id='files'>{listItems}</ul>
+            <Layout>
+                <ul id='files'>{listItems}</ul>
+            </Layout>
+            
         );
     }
 }

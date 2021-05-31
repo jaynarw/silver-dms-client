@@ -1,5 +1,6 @@
 import React from 'react';
-
+import {Button} from "antd";
+import "antd/dist/antd.css"
 function Toolbar(props) {
   if (props.fileEdit) {
     const tools = (
@@ -7,10 +8,10 @@ function Toolbar(props) {
         <form>
           <label for='newname' id='lnewname'>Enter New Name:</label>
           <input id='newname' name={'newname'} type={'text'} />
-          <button id='change' onClick={(e) => {
+          <Button id='change' type = "default" onClick={(e) => {
             e.preventDefault();
             props.onChangeClick(e);
-          }}>Change</button>
+          }}>Change</Button>
         </form>
 
       </div>
@@ -19,10 +20,10 @@ function Toolbar(props) {
   }
   const tools = (
     <div>
-      <button id='rename' onClick={props.onRenameClick}>Rename</button>
-      <button id='accept'>Accept</button>
-      <button id='reject'>Reject</button>
-      <button id='addfle' onClick={props.onAddClick} >Add File</button>
+      <Button  type = "ghost" id='rename' onClick={props.onRenameClick}>Rename</Button>
+      <Button type = "dashed" id='accept'>Accept</Button>
+      <Button type = "link" id='reject'>Reject</Button>
+      <Button type = "text" id='addfle' onClick={props.onAddClick} >Add File</Button>
     </div>
   );
   return tools;

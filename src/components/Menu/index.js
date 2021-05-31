@@ -1,4 +1,7 @@
 import React from 'react';
+import {Button, Input } from "antd";
+import "antd/dist/antd.css";
+
 
 class LeftMenu extends React.Component{
   constructor(props){
@@ -32,14 +35,14 @@ class LeftMenu extends React.Component{
       const menu = !this.state.editing?(
           <div>
               <p>{this.state.Name[this.props.fileNumber]}</p>
-              <button onClick={this.handleRenameClick}>{this.props.button1}</button>
-              <button >{this.props.button2}</button>
+              <Button onClick={this.handleRenameClick}>{this.props.button1}</Button>
+              <Button >{this.props.button2}</Button>
           </div>
       ):(
           <div>
               <label for = "new_name">Enter new name: </label>
-              <input minLength={1} id="new_name"type="text" value={this.state.Name[this.props.fileNumber]} onChange={this.handleChangeNameClick}/>
-              <button onClick={this.handleChangeClick}>Change Name</button>
+              <Input minLength={1} id="new_name"type="text" value={this.state.Name[this.props.fileNumber]} onChange={this.handleChangeNameClick}/>
+              <Button onClick={this.handleChangeClick}>Change Name</Button>
           </div>
       );
       return(
@@ -67,7 +70,7 @@ class FileMenu extends React.Component{
   }
   render(){
       const fileBox = (
-          <button id='file_info'>
+          <Button id='file_info'>
           <div class='encloser'>
               
               <div class ='foption' id="left">
@@ -75,7 +78,7 @@ class FileMenu extends React.Component{
               </div>
               <div class = 'fdesc'>
                   <p>{this.props.name}</p>
-                  <p>This has the description of the file.</p>
+                  <p>{this.props.link}</p>
               </div>
               <div class='decide' id = 'right'>
                   <p>Accept/Reject Button</p>
@@ -84,7 +87,7 @@ class FileMenu extends React.Component{
               </div>
               
           </div>
-          </button>
+          </Button>
       );
       return (
           fileBox
