@@ -4,25 +4,112 @@ import "antd/dist/antd.css";
 
 function FileContainer() {
     const [loading, setLoading] = useState(true);
-    const [fileArray, setFileArray] = useState([]);
+    const [fileArray, setFileArray] = useState([
+        // {
+        //     name:["name1","name2"],
+        //     course:"",
+        //     files:["file1","file2"],
 
+            
+        // },
+         {"Academic Session": "2019-20",
+          "Course Code": "CS425", 
+          "ID": 0, 
+         "Resource Accepted?": "Yes",
+          "Timestamp": "12/01/2021 09:06:01",
+           "Type of material": "Midsem",
+            "Upload Files": ["https://drive.google.com/open?id=12saV3Dhw_vMpOQ7IWx-qPQP_7NthSB_4"]},
+
+            {"Academic Session": "2019-20",
+             "Course Code": "PHY473", 
+             "ID": 1,
+             "Resource Accepted?": "Yes, Yes", 
+             "Timestamp": "14/01/2021 09:44:33", "Type of material": "Midsem", 
+             "Upload Files": ["https://drive.google.com/open?id=15M_Wd3R2wQ4sujyM9Kc0s0Cenp-xL1xu", "https://drive.google.com/open?id=10yQn-9JM-Zx5ptAkf6X4tkvqsRdyfCTs"]},
+
+    ]);
     useEffect(() => {
         fetch('http://localhost:5000/data').then((res) => res.json()).then((files) => {
-            console.log(files);
+            //console.log(files);
+            files.forEach(element => {
+                element['Upload Files'] = element['Upload Files'].split(",");
+                console.log(element['Upload Files']);
+            });
             setFileArray(files);
+            console.log(files);
             setLoading(false);
         });
         return () => {
             console.log("This will be called when unmounted");
         };
     }, []);
+
+     var renderedFileArray = fileArray.map((file,index)=>
+         
+            // <DataRow key={"f"+index} filename={"Demo"} course={file['Course Code']} 
+            //         files={file['Upload Files']} mType={file['Type of material']}/>
+            ({
+                Id:file['ID'],
+                name:'demo',
+                session:file['Academic Session'],
+                course:file['Course Code'],
+                fileLinks:file['Upload Files'].map((file,index)=>
+                <><li><a href = {file} target="_blank">View File {index +1}</a></li></>
+                ),
+                renameButtons:file['Upload Files'].map((f)=><><Button type='default' size='small'>Rename</Button><br/></>),
+                actions:[file['ID'],file['Upload Files'].map((f,i)=>
+                    <>
+                    <Space size="small">
+                        <Button type="link" onClick={()=>handleOnAcceptClick(index,i)}>Accept</Button>
+                        <Button type="link" onClick={()=>handleOnRejectClick(index,i)}>Reject</Button>
+                    </Space> 
+                    <br/>
+                    </>
+                    
+                  
+                )]
+            })
+      
+     );
+    function handleOnAcceptClick(index, subIndex){
+        var farr = fileArray.slice();
+        farr[index]['Upload Files'].splice(subIndex,1);
+        if(farr[index]['Upload Files'].length == 0){
+            farr.splice(index,1);
+        }
+        setFileArray(farr);
+    }
+    function handleOnRejectClick(index,subIndex){
+        var farr = fileArray.slice();
+        farr[index]['Upload Files'].splice(subIndex,1);
+        if(farr[index]['Upload Files'].length == 0){
+            farr.splice(index,1);
+        }
+        setFileArray(farr);
+    }
+    function handleOnAcceptAllClick(index){
+        var farr = fileArray.slice();
+        farr.splice(index,1);
+        setFileArray(farr);
+    }
+    function handleOnRejectAllClick(index){
+        var farr = fileArray.slice();
+        farr.splice(index,1);
+        setFileArray(farr);
+    }
     
     const columns=[
         {
             title: 'Uploaded By',
-            dataIndex:'providerName',
+            dataIndex:'name',
             key:'name',
+            
 
+        },
+        {
+            title:'Academic Session',
+            dataIndex:'session',
+            key:'session',
         },
         {
             title: 'Course',
@@ -31,36 +118,45 @@ function FileContainer() {
         },
         {
             title:'Uploaded Files',
-            dataIndex:'files',
+            dataIndex:'fileLinks',
             key:'files',
-            render:(files) => files.map((file, index)=>
-                <li><a href={file}>View File {index}</a></li>
-            ),
+            //  render:(files) => files.map((file, index)=>
+            //      <li><a href={file}>View File {index}</a></li>
+            //  ),
         },
         {
             title:'Edit File',
-            dataIndex:'edit-file',
-            key:'edit-file',
-            render:()=>(
-                <Button type="primary">Rename</Button>
-            ),
-        },
+            dataIndex:'renameButtons',
+            key:'editFile',
+        //     render:()=>(
+        //         <Button type="primary">Rename</Button>
+        //     ),
+         },
         {
             title:'Actions',
-            dataIndex:'actions',
+            dataIndex:['actions'],
             key:'actions',
-            render:()=>(
+            
+            render:(b)=>(
+                <>
+                
+                {b[1]}
                 <Space size="small">
-                    <Button type="link" >Accept</Button>
-                    <Button type="link">Reject</Button>
+                    <Button type="dashed" size='small'
+                     onClick={()=>handleOnAcceptAllClick(b[0])}>Accept All</Button>
+                    <Button type="dashed" size="small"
+                     onClick={()=>handleOnRejectAllClick(b[0])}>Reject All</Button>
                 </Space>
+                </>
             ),
         
         },
     ];
+    var dispalyTable = (<Table columns={columns} dataSource={renderedFileArray} scroll={{y:650}}/>)
+    console.log(renderedFileArray);
     return (<>
     {loading && <Spin spinning />}
-    {!loading && <Table columns={columns} dataSource={fileArray}/>}
+    {!loading && dispalyTable}
     </>);
 }
 export default FileContainer;

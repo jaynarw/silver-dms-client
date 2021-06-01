@@ -22,7 +22,7 @@ cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET","POST"])
 def home():
     msg = "Backend for Exam_Vault. ADMIN ACCESS ONLY"
     return msg
@@ -36,6 +36,8 @@ def get_data_from_firebase():
     )
     return json.dumps(ref.get())
 
-
+@app.route("/<int:name>",methods=["GET"])
+def greet_user(name):
+    return "Hello"+str(name)
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

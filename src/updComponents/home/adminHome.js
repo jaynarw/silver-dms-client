@@ -21,7 +21,7 @@ function HomePage(){
             <Layout>
                 <Sider className="sub-pages">
                     <Menu 
-                        theme="dark"
+                        theme="light"
                         mode="inline"
                         defaultSelectedKeys={['item1']}
                         style={{height:'100%', borderRight:0}}
