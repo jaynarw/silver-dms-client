@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Table, Space, Button, Spin,Alert} from "antd";
+import {Table, Space, Button, Spin,Alert,Tag} from "antd";
 import "antd/dist/antd.css";
 
 function FileContainer() {
@@ -36,11 +36,18 @@ function FileContainer() {
             //console.log(files);
             files.forEach(element => {
                 element['Upload Files'] = element['Upload Files'].split(",");
-                element['responded'] = 
-                console.log(element['Upload Files']);
+                element['Resource Accepted?'] = element['Resource Accepted?'].split(', ');
+                element['responded'] = [];
+                for(var i = 0; i < element['Upload Files'].length;i++){
+                    if(element['Resource Accepted?'][i] == 'No')
+                        element['responded'].push(false);
+                    else element['responded'].push(true);
+                }
+                //console.log(element['responded']);
+                //console.log(element['Upload Files']);
             });
             setFileArray(files);
-            console.log(files);
+            console.log(files[0]['responded'][0]);
             setLoading(false);
         });
         return () => {
@@ -55,32 +62,45 @@ function FileContainer() {
             ({
                 Id:file['ID'],
                 name:'demo',
+                key:'f'+index,
                 session:file['Academic Session'],
                 course:file['Course Code'],
-                fileLinks:file['Upload Files'].map((file,index)=>
-                <><li><a href = {file} target="_blank">View File {index +1}</a></li></>
+                fileLinks:file['Upload Files'].map((f,subIndex)=>
+                 (<>{ <li><a href = {f} target="_blank">View File {index +1}</a></li>}</>)
                 ),
                 renameButtons:file['Upload Files'].map((f)=><><Button type='default' size='small'>Rename</Button><br/></>),
                 actions:[file['ID'],file['Upload Files'].map((f,i)=>
-                    <>
-                    <Space size="small">
+                    (<>
+                     
+
+                    
+                     { !file['responded'][i] &&!updatingData && (
+                        <Space size="small">
                         <Button type="link" onClick={()=>handleOnAcceptClick(index,i)}>Accept</Button>
                         <Button type="link" onClick={()=>handleOnRejectClick(index,i)}>Reject</Button>
-                    </Space> 
+                    </Space>
+                    )}
+                    {file['responded'][i] && !updatingData && <Tag color='green'>Accepted</Tag>}
+                    
+                    { !file['responded'][i] &&updatingData && !updated[0] && <Alert type='warning' message='Updating...'/>}
+                    {!file['responded'][i] && updatingData && updated[0] && <Alert type='success' message={updated[1]}/>}
+                    
                     <br/>
-                    </>
+                    </>)
                     
                   
                 )]
             })
       
      );
+     
     function handleOnAcceptClick(index, subIndex){
         if(!updatingData){
             setUpdated([false,""])
             setUpdatingData(true)
             var farr = fileArray.slice();
-            farr[index]['Upload Files'].splice(subIndex,1);
+            //farr[index]['Upload Files'].splice(subIndex,1);
+            farr[index]['responded'][subIndex] = true;
             if(farr[index]['Upload Files'].length == 0){
                 farr.splice(index,1);
             }
@@ -98,7 +118,8 @@ function FileContainer() {
             setUpdated([false,""])
             setUpdatingData(true)
             var farr = fileArray.slice();
-            farr[index]['Upload Files'].splice(subIndex,1);
+            //farr[index]['Upload Files'].splice(subIndex,1);
+            farr[index]['responded'][subIndex] = true;
             if(farr[index]['Upload Files'].length == 0){
                 farr.splice(index,1);
             }
@@ -168,19 +189,14 @@ function FileContainer() {
                 
                 {b[1]}
                 <Space size="small">
-                    {!updatingData}?(
-                        <Button type="dashed" size='small'
-                     onClick={()=>handleOnAcceptAllClick(b[0])}>Accept All</Button>
-                    <Button type="dashed" size="small"
-                     onClick={()=>handleOnRejectAllClick(b[0])}>Reject All</Button>
-                    ):
-                    (   {!updated[0]}?
-                        <Alert message='Updating...' type='warning' size='small'/>
-                        :
-                        <Alert message={updated[1]} type='success' size='small'/>
-                    )
+                            <Button type="dashed" size='small'
+                            onClick={()=>handleOnAcceptAllClick(b[0])}>Accept All</Button>
+                            <Button type="dashed" size="small"
+                            onClick={()=>handleOnRejectAllClick(b[0])}>Reject All</Button>
+                        </Space>
                     
-                </Space>
+                    
+                    
                 </>
             ),
         
