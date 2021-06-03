@@ -2,7 +2,6 @@ import React from 'react';
 import {Button, Input,Layout,Menu,Breadcrumb} from "antd";
 import "antd/dist/antd.css";
 import {UserOutlined, FolderFilled, FolderOutlined, InfoOutlined} from "@ant-design/icons";
-import ReactDOM from 'react-dom';
 import FileContainer from './FileViewer';
 const {Content, Header, Sider} = Layout;
 function HomePage(){

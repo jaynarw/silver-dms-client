@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Box from './admin.js'
-import App from './App.js'
-import HomePage from './updComponents/home/adminHome.js';
+import HomePage from './components/adminHome';
 
 
 
