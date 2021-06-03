@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {Table, Space, Button, Spin} from "antd";
+import {Table, Space, Button, Spin,Alert} from "antd";
 import "antd/dist/antd.css";
 
 function FileContainer() {
+    const [updatingData,setUpdatingData] = useState(false);
+    const[updated,setUpdated] = useState([false,""]);
     const [loading, setLoading] = useState(true);
     const [fileArray, setFileArray] = useState([
         // {
@@ -28,11 +30,13 @@ function FileContainer() {
              "Upload Files": ["https://drive.google.com/open?id=15M_Wd3R2wQ4sujyM9Kc0s0Cenp-xL1xu", "https://drive.google.com/open?id=10yQn-9JM-Zx5ptAkf6X4tkvqsRdyfCTs"]},
 
     ]);
+    
     useEffect(() => {
         fetch('http://localhost:5000/data').then((res) => res.json()).then((files) => {
             //console.log(files);
             files.forEach(element => {
                 element['Upload Files'] = element['Upload Files'].split(",");
+                element['responded'] = 
                 console.log(element['Upload Files']);
             });
             setFileArray(files);
@@ -72,20 +76,42 @@ function FileContainer() {
       
      );
     function handleOnAcceptClick(index, subIndex){
-        var farr = fileArray.slice();
-        farr[index]['Upload Files'].splice(subIndex,1);
-        if(farr[index]['Upload Files'].length == 0){
-            farr.splice(index,1);
+        if(!updatingData){
+            setUpdated([false,""])
+            setUpdatingData(true)
+            var farr = fileArray.slice();
+            farr[index]['Upload Files'].splice(subIndex,1);
+            if(farr[index]['Upload Files'].length == 0){
+                farr.splice(index,1);
+            }
+            fetch('http://localhost:5000/file-accepted/'+index+'&'+subIndex).then((res)=>
+               setUpdated([true,res]) 
+            )
+            setUpdatingData(false);
+            setFileArray(farr);
+
         }
-        setFileArray(farr);
+        
     }
     function handleOnRejectClick(index,subIndex){
-        var farr = fileArray.slice();
-        farr[index]['Upload Files'].splice(subIndex,1);
-        if(farr[index]['Upload Files'].length == 0){
-            farr.splice(index,1);
+        if(!updatingData){
+            setUpdated([false,""])
+            setUpdatingData(true)
+            var farr = fileArray.slice();
+            farr[index]['Upload Files'].splice(subIndex,1);
+            if(farr[index]['Upload Files'].length == 0){
+                farr.splice(index,1);
+            }
+            fetch('http://localhost:5000/file-rejected/'+index+'&'+subIndex).then((res)=>{
+                setUpdated([true,res]) 
+                console.log(res);
+            }
+               
+            )
+            setUpdatingData(false);
+            setFileArray(farr);
+
         }
-        setFileArray(farr);
     }
     function handleOnAcceptAllClick(index){
         var farr = fileArray.slice();
@@ -142,10 +168,18 @@ function FileContainer() {
                 
                 {b[1]}
                 <Space size="small">
-                    <Button type="dashed" size='small'
+                    {!updatingData}?(
+                        <Button type="dashed" size='small'
                      onClick={()=>handleOnAcceptAllClick(b[0])}>Accept All</Button>
                     <Button type="dashed" size="small"
                      onClick={()=>handleOnRejectAllClick(b[0])}>Reject All</Button>
+                    ):
+                    (   {!updated[0]}?
+                        <Alert message='Updating...' type='warning' size='small'/>
+                        :
+                        <Alert message={updated[1]} type='success' size='small'/>
+                    )
+                    
                 </Space>
                 </>
             ),
