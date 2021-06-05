@@ -35,6 +35,11 @@ def get_all_data():
     return ref.get()
 
 
+def on_data_change(callback):
+    ref = db.reference(f"{sheet_id}/Form%20responses%201/")
+    return ref.listen(callback)
+
+
 def initializeAccepted():
     data = get_all_data()
     with ThreadPoolExecutor(max_workers=30) as executor:

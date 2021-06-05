@@ -1,5 +1,14 @@
 {
   "python.autoComplete.extraPaths": [
     "./backend"
+  ],
+  "python.analysis.extraPaths": [
+    "./backend"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true //if you're using vscode and don't want eslint-prettier to autofix on save replace true with false
+  },
+  "eslint.validate": [
+    "javascript"
   ]
 }

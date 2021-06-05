@@ -1,6 +1,7 @@
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from utils import remove_name
 
 gauth = GoogleAuth()
 # Try to load saved client credentials
@@ -60,6 +61,9 @@ def accept_without_folder_creation(id, folder_id, updated_title=None):
     ## move to that folder
     updated_file_obj = drive.CreateFile({"id": id})
     updated_file_obj.Upload()
+    originalFilename = updated_file_obj["originalFilename"]
+    if originalFilename == updated_file_obj["title"]:
+        updated_file_obj["title"] = remove_name(originalFilename)
     if updated_title:
         updated_file_obj["title"] = updated_title
     updated_file_obj["parents"] = [{"kind": "drive#parentReference", "id": folder_id}]

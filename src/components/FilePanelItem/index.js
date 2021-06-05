@@ -1,21 +1,25 @@
-import React, { useState } from "react";
-import { List, Input, Skeleton, Space, Button, Tag, Divider } from "antd";
+import React, { useState, useEffect } from 'react';
+import {
+  List, Input, Skeleton, Space, Button, Tag, Divider,
+} from 'antd';
 import { AiOutlineEdit, AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
-import { formatDate } from "../../utils";
-import fileSize from "filesize";
+import fileSize from 'filesize';
+import { formatDate } from '../../utils';
 
-const Suffix = (<AiOutlineEdit
-style={{
-  fontSize: 16,
-  color: 'rgba(0,0,0,0.6)',
-}}
-/>);
+const Suffix = (
+  <AiOutlineEdit
+    style={{
+      fontSize: 16,
+      color: 'rgba(0,0,0,0.6)',
+    }}
+  />
+);
 
 const IconText = ({ icon, text }) => (
   <Space>
     <Button type="text" size="small">
-    {React.createElement(icon)}
-    {text}
+      {React.createElement(icon)}
+      {text}
     </Button>
   </Space>
 );
@@ -29,45 +33,64 @@ function FileDesc({ data }) {
   if (!data) {
     return null;
   }
-  const { quotaBytesUsed, fileExtension, mimeType, createdDate, modifiedDate, sharingUser} = data;
+  const {
+    quotaBytesUsed, fileExtension, mimeType, createdDate, modifiedDate, sharingUser,
+  } = data;
   // const { displayName } = sharingUser;
   return (
-  <>
-    <Tag>{fileExtension}</Tag>
-    <Tag>{mimeType}</Tag>
-    {sharingUser && <Tag>{sharingUser.displayName}</Tag>}
-    <Tag>{fileSize(quotaBytesUsed)}</Tag>
-    <Divider type="vertical"/>
-    <span style={{ marginRight: 8 }}>Created Date:</span>
-    <Tag>{formatDate(createdDate)}</Tag>
-    <Divider type="vertical"/>
-    <span style={{ marginRight: 8 }}>Modified Date:</span>
-    <Tag>{formatDate(modifiedDate)}</Tag>
-  </>)
+    <>
+      <Tag>{fileExtension}</Tag>
+      <Tag>{mimeType}</Tag>
+      {sharingUser && <Tag>{sharingUser.displayName}</Tag>}
+      <Tag>{fileSize(quotaBytesUsed)}</Tag>
+      <Divider type="vertical" />
+      <span style={{ marginRight: 8 }}>Created Date:</span>
+      <Tag>{formatDate(createdDate)}</Tag>
+      <Divider type="vertical" />
+      <span style={{ marginRight: 8 }}>Modified Date:</span>
+      <Tag>{formatDate(modifiedDate)}</Tag>
+    </>
+  );
 }
 
-function FilePanelItem({ id, fileMetadata }) {
-  return (<List.Item
-    key={id}
-    actions={[
-      <IconText icon={AiOutlineLike} text="Accept" key="list-vertical-like-o" />,
-      <IconText icon={AiOutlineDislike} text="Reject" key="list-vertical-dislike-o" />,
-    ]}
-    extra={
+function FilePanelItem({ id, fileMetadata, onNameChange }) {
+  const [newTitle, setNewTitle] = useState('');
+  useEffect(() => {
+    if (fileMetadata) {
+      setNewTitle(fileMetadata.title);
+    }
+  }, [fileMetadata]);
+  return (
+    <List.Item
+      key={id}
+      actions={[
+        <IconText icon={AiOutlineLike} text="Accept" key="list-vertical-like-o" />,
+        <IconText icon={AiOutlineDislike} text="Reject" key="list-vertical-dislike-o" />,
+      ]}
+      extra={
       (fileMetadata !== null) && (<PreviewIframe src={fileMetadata.embedLink} title={fileMetadata.title} />)
     }
-  >
-    <Skeleton loading={fileMetadata === null} active avatar>
-      {(fileMetadata !== null) && (
+    >
+      <Skeleton loading={fileMetadata === null} active avatar>
+        {(fileMetadata !== null) && (
         <>
           <List.Item.Meta
-          title={<Input value={fileMetadata.title} suffix={Suffix} />}
-          description={<FileDesc data={fileMetadata} />}
+            title={(
+              <Input
+                value={newTitle}
+                onChange={(e) => {
+                  setNewTitle(e.target.value);
+                  onNameChange(id, e.target.value, (e.target.value) === (fileMetadata.title));
+                }}
+                suffix={Suffix}
+              />
+)}
+            description={<FileDesc data={fileMetadata} />}
           />
         </>
-        )
-      }
-    </Skeleton>
-  </List.Item>);
+        )}
+      </Skeleton>
+    </List.Item>
+  );
 }
 export default FilePanelItem;

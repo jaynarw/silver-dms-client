@@ -11,10 +11,15 @@ acceptFile = {
 acceptMultipleFiles = {
     "type": "object",
     "properties": {
-        "ids": {"type": "array", "items": "string"},
+        "ids": {
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+        },
         "row_id": {"type": "string"},
         "course_code": {"type": "string"},
         "updated_title_obj": {"type": "object"},
     },
-    "required": ["id", "row_id", "course_code"],
+    "required": ["ids", "row_id", "course_code"],
 }

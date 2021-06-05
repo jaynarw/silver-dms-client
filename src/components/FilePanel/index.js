@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { List } from "antd";
-import FilePanelItem from "../FilePanelItem";
+import React, { useState, useEffect } from 'react';
+import { List } from 'antd';
+import FilePanelItem from '../FilePanelItem';
 
-function FilePanelList({ fileIds }) {
+function FilePanelList({ fileIds, onNameChange }) {
   const initialState = {};
   fileIds.forEach((file_url) => {
     const url = new URL(file_url);
@@ -16,25 +16,21 @@ function FilePanelList({ fileIds }) {
       fetch(`http://localhost:5000/get/${id}`)
         .then((res) => res.json())
         .then((data) => {
-        setFilesMetadata((prev) => ({...prev, [id]:data}));
-      });
-    })
+          setFilesMetadata((prev) => ({ ...prev, [id]: data }));
+        });
+    });
   }, []);
 
-  return (  
-  <List
-    itemLayout="vertical"
-    size="large"
-    dataSource={Object.keys(filesMetadata)}
-    footer={
-      <div>
-        <b>ant design</b> footer part
-      </div>
-    }
-    renderItem={item => (
-      <FilePanelItem id={item} fileMetadata={filesMetadata[item]} />
-    )}
-  />)
+  return (
+    <List
+      itemLayout="vertical"
+      size="large"
+      dataSource={Object.keys(filesMetadata)}
+      renderItem={(item) => (
+        <FilePanelItem id={item} fileMetadata={filesMetadata[item]} onNameChange={onNameChange} />
+      )}
+    />
+  );
 }
 
 export default FilePanelList;

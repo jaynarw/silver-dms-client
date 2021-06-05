@@ -1,20 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import "@fontsource/roboto"
+import '@fontsource/roboto';
 import './index.css';
 import HomePage from './components/adminHome';
+import WSClient, { SocketContext } from './components/Socket';
 
-
-
+const { socket } = new WSClient('http://localhost:5000');
 
 ReactDOM.render(
   <React.StrictMode>
-    <HomePage />
+    <SocketContext.Provider value={socket}>
+      <HomePage />
+    </SocketContext.Provider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-

@@ -5,8 +5,10 @@ from flask_expects_json import expects_json
 import drive_handler
 import schema
 import firebase_handler
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
@@ -72,6 +74,17 @@ def accept_multiple_files():
     except:
         return "fail"
 
+
+@socketio.on("loaddata")
+def handle_my_custom_event(methods=["GET", "POST"]):
+    print("received my event: ")
+    socketio.emit("data", firebase_handler.get_all_data())
+
+
+# Listen change to data
+firebase_handler.on_data_change(
+    lambda event: socketio.emit("data", firebase_handler.get_all_data())
+)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
