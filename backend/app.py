@@ -1,7 +1,9 @@
 from logging import debug
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-from drive_handler import *
+from flask_expects_json import expects_json
+import drive_handler
+import schema
 import firebase_handler
 
 app = Flask(__name__)
@@ -21,47 +23,54 @@ def get_data_from_firebase():
     return jsonify(firebase_handler.get_all_data())
 
 
-@app.route("/get/<string:id>")
+@app.route("/get/<string:id>", methods=["GET"])
 @cross_origin()
 def get_file_data(id):
-    return get_file_data_by_id(id)
+    return drive_handler.get_file_data_by_id(id)
 
 
 @app.route("/acceptFile", methods=["POST"])
 @cross_origin()
+@expects_json(schema.acceptFile)
 def acceptFile():
-    if ("id" not in request.json) or ("course_code" not in request.json):
-        print(request.json)
-        return ("Bad request", 400)
     try:
+        row_id = request.json["row_id"]
         id = request.json["id"]
         course_code = request.json["course_code"]
+        ### Move/Rename File in drive
         if "updated_title" in request.json:
-            accept_file_drive(id, course_code, request.json["updated_title"])
+            drive_handler.accept_file_drive(
+                id, course_code, request.json["updated_title"]
+            )
         else:
-            accept_file_drive(id, course_code)
-
+            drive_handler.accept_file_drive(id, course_code)
+        ### Update accepted in firebase
+        firebase_handler.accept_file(row_id, id)
         return "success"
     except:
         return "fail"
 
 
-# @app.route("/acceptMultipleFile", methods=["POST"])
-# @cross_origin()
-# def acceptFile():
-#     if ("id" not in request.json) or ("course_code" not in request.json):
-#         print(request.json)
-#         return ("Bad request", 400)
-#     try:
-#         id = request.json["id"]
-#         course_code = request.json["course_code"]
-#         if "updated_title" in request.json:
-#             accept_file_drive(id, course_code, request.json["updated_title"])
-#         else:
-#             accept_file_drive(id, course_code)
-#         return "success"
-#     except:
-#         return "fail"
+@app.route("/acceptMultipleFiles", methods=["POST"])
+@cross_origin()
+@expects_json(schema.acceptMultipleFiles)
+def accept_multiple_files():
+    try:
+        row_id = request.json["row_id"]
+        ids = request.json["ids"]
+        course_code = request.json["course_code"]
+        ### Move/Rename File in drive
+        if "updated_title_obj" in request.json:
+            drive_handler.accept_multiple_files_drive(
+                ids, course_code, request.json["updated_title_obj"]
+            )
+        else:
+            drive_handler.accept_multiple_files_drive(ids, course_code)
+        ### Update accepted in firebase
+        firebase_handler.accept_multiple_files(row_id, ids)
+        return "success"
+    except:
+        return "fail"
 
 
 if __name__ == "__main__":
