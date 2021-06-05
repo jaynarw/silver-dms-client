@@ -19,7 +19,7 @@ function FileHeader({ data }) {
     <div className={styles.Header}>
       <div className={styles.title} onClick={(e) => e.stopPropagation()}><GetTitle data={data} /></div>
       <div className={styles.type} onClick={(e) => e.stopPropagation()}>
-        {data["Type of material"].split(', ').map((type) => (<Tag color={colorCodes[type]}>{type}</Tag>))}
+        {data["Type of material"].split(', ').map((type) => (<Tag key={type} color={colorCodes[type]}>{type}</Tag>))}
       </div>
       <div className={styles.fileContainer} onClick={(e) => e.stopPropagation()}>
         <span className={styles.files}>{data["Upload Files"].length}</span>

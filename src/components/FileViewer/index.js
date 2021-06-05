@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Spin, Space, Pagination } from "antd";
+import {Spin, Space, Pagination, List } from "antd";
 import FileEntry from "../FileEntry";
 import "antd/dist/antd.css";
 import styles from "./styles.module.css";
@@ -13,12 +13,10 @@ function FileContainer() {
     
     useEffect(() => {
         fetch('http://localhost:5000/data').then((res) => res.json()).then((files) => {
-            //console.log(files);
             files.forEach(element => {
                 element['Upload Files'] = element['Upload Files'].split(",");
             });
             setFileArray(files);
-            console.log(files);
             setLoading(false);
         });
         return () => {
@@ -37,18 +35,21 @@ function FileContainer() {
         {loading && <Spin spinning />}
         {!loading && (
             <div>
-              <Space direction="vertical" style={{ display: "flex" }}>
-                {filteredFiles.map((file, ind) =>
-                  <FileEntry key={file.id} data={file} />
+              <List
+                dataSource={filteredFiles}
+                pagination={{
+                  total: fileArray.length,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total) => `Total ${total} items`,
+                  onChange: handlePageChange,
+                }}
+                renderItem={(file) => (
+                  <List.Item key={file.id}>
+                    <FileEntry data={file} />
+                  </List.Item>
                 )}
-                <Pagination
-                  total={fileArray.length}
-                  showSizeChanger
-                  showQuickJumper
-                  showTotal={total => `Total ${total} items`}
-                  onChange={handlePageChange}
-                />
-              </Space>
+              />
             </div>
         )}
     </>);
