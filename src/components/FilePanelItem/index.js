@@ -63,7 +63,7 @@ function FilePanelItem({ id, fileMetadata, onNameChange }) {
   return (
     <List.Item
       key={id}
-      actions={[
+      actions={(fileMetadata !== null) && [
         <IconText icon={AiOutlineLike} text="Accept" key="list-vertical-like-o" />,
         <IconText icon={AiOutlineDislike} text="Reject" key="list-vertical-dislike-o" />,
       ]}
