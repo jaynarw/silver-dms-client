@@ -2,6 +2,7 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from utils import remove_name
+import json
 
 gauth = GoogleAuth()
 # Try to load saved client credentials
@@ -104,3 +105,34 @@ def accept_multiple_files_drive(ids, course_code, updated_title_obj={}):
                 )
         for future in as_completed(futures):
             print(future.result())
+
+
+def generate_metadata():
+    with open("CourseNameMap.json", "r") as file:
+        course_name_map = json.loads(file.read())
+    file_list = drive.ListFile(
+        {
+            "q": "parents = 'root' and mimeType = 'application/vnd.google-apps.folder' and trashed=false"
+        }
+    ).GetList()
+    courses = [i for i in file_list if "[Course] " in i["title"]]
+    [i.FetchMetadata(fields="permissions") for i in courses]
+
+    metadata = []
+    course_added = set()
+    for i in courses:
+        # insert new permission
+        i.InsertPermission(
+            {"type": "anyone", "value": "anyone", "role": "reader", "withLink": True}
+        )
+        courseId = i["title"][len("[Course] ") :]
+        link = i["alternateLink"]
+        metadata.append(
+            {"cid": courseId, "cname": course_name_map[courseId], "link": link}
+        )
+        if courseId in course_added:
+            print(f"ALERT multiple occurence of folder {courseId}")
+        else:
+            course_added.add(courseId)
+    with open("dist/metadata.json", "w+") as file:
+        file.write(json.dumps(metadata, indent=2))
