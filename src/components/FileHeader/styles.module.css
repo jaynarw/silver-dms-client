@@ -1,0 +1,56 @@
+.Header {
+  display: inline-grid;
+  grid-template-columns: 5fr 5fr 2fr 5fr 5fr 2fr;
+  grid-template-rows: 1fr;
+  gap: 8px 8px;
+  width: 100%;
+  align-items: center;
+  grid-template-areas:
+    "title type files accept reject openbutton";
+}
+.title {
+  grid-area: title;
+}
+.type {
+  grid-area: type;
+}
+.fileContainer {
+  grid-area: files;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.files {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  height: 32px;
+  width: 32px;
+  border: 2px solid rgba(0,0,0,0.4);
+  color: rgba(0,0,0,0.88);
+  border-radius: 50%;
+}
+.accept {
+  grid-area: accept;
+}
+.reject {
+  grid-area: reject;
+}
+.primary {
+  border-radius: 4px;
+  background-color: black!important;
+  color: rgba(255,255,255,0.88);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.primary:hover {
+  border: 1px solid rgba(0,0,0,0.4);
+}
+.secondary {
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+.openbutton {
+  grid-area: openbutton;
+}
