@@ -6,25 +6,16 @@ import 'antd/dist/antd.css';
 import {
   UserOutlined, FolderFilled, FolderOutlined, InfoOutlined,
 } from '@ant-design/icons';
-import FileContainer from './FileViewer';
+import styles from './styles.module.css';
+import FileContainer from '../FileViewer';
+import Logo from '../Logo';
 
 const { Content, Header, Sider } = Layout;
 function HomePage() {
   return (
     <Layout>
-      <Header className="header">
-        <h1
-          className="portal-name"
-          style={{
-            color: 'red',
-            textDecoration: 'Uppercase',
-            textAlign: 'center',
-            textTransform: 'uppercase',
-          }}
-        >
-          Admin Portal
-        </h1>
-
+      <Header className={styles.header}>
+        <Logo />
       </Header>
       <Layout>
         <Sider className="sub-pages">

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import '@fontsource/roboto';
 import './index.css';
-import HomePage from './components/adminHome';
+import HomePage from './components/Homepage';
 import WSClient, { SocketContext } from './components/Socket';
 
 const { socket } = new WSClient('http://localhost:5000');
